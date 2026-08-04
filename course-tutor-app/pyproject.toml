@@ -1,0 +1,24 @@
+[project]
+name = "course-tutor-app"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "BM757", email = "balogunmoshood757@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "chromadb>=1.5.9",
+    "ollama>=0.6.2",
+    "pandas>=3.0.5",
+    "pymupdf>=1.28.0",
+    "requests>=2.34.2",
+    "streamlit>=1.61.0",
+]
+
+[project.scripts]
+course-tutor-app = "course_tutor_app:main"
+
+[build-system]
+requires = ["uv_build>=0.12.1,<0.13.0"]
+build-backend = "uv_build"
