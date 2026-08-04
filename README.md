@@ -15,14 +15,17 @@ Eliminate Hallucinations: Prevents broad generic answers by constraining respons
 Complete Privacy: Keeps study notes, university slides, and intellectual property stored locally on disk.
 Page-Level Citation: Always tells the student which slide or page number was referenced.
 
+---
+
 ## ✨ Features
 
 * **🔒 100% Private & Offline:** Runs entirely on your local machine using Ollama. No API keys, cloud subscriptions, or external data sharing required.
+* **⚡ Managed by `uv`:** Lightning-fast environment resolution and package installation.
 * **💾 Local SQLite Persistence:** Powered by ChromaDB backed by SQLite (`chroma.sqlite3`). Index your course materials once and query them forever across restarts.
 * **📍 Page & Slide Citations:** Every answer cites the exact page or slide number where the information was found.
 * **⚡ Blazing Fast Retrieval:** Uses `nomic-embed-text` for semantic vector search and `llama3.2` for instant, streaming answers.
 * **📊 Built-in Evaluation Benchmark:** Includes local scripts for synthetic ground-truth generation, Hit Rate/MRR metrics, and LLM-as-a-Judge grading.
-* **📈 Telemetry & Monitoring Dashboard:** Tracks search latency, response generation time, prompt lengths, and user satisfaction (thumbs up/down) in a dedicated local dashboard.
+* **📈 Telemetry & Monitoring Dashboard:** Tracks search latency, response generation time, prompt lengths, and user satisfaction in real-time.
 
 ---
 
@@ -55,50 +58,45 @@ Page-Level Citation: Always tells the student which slide or page number was ref
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Quick Start (GitHub Codespaces / Local Setup)
 
-### 1. Prerequisites
+### 1. Install `uv` & Dependencies
 
-* **Python 3.10+** installed.
-* **Ollama** installed ([ollama.com](https://ollama.com)).
-
-### 2. Pull Local Models
-
-Run these commands in your terminal to download the local embedding model and LLM:
+Clone the repository and install all virtual environment dependencies using `uv`:
 
 ```bash
-# Vector embedding model optimized for RAG
-ollama pull nomic-embed-text
+# Clone repository
+git clone [https://github.com/your-username/course-tutor-app.git](https://github.com/your-username/course-tutor-app.git)
+cd course-tutor-app
 
-# Lightweight 3B parameter LLM for response generation
+# Sync project virtual environment using uv
+uv sync
+
+```
+
+### 2. Start Ollama & Pull Models
+
+Install Ollama and download the local embedding model and LLM:
+
+```bash
+# Install Ollama (Linux / Codespaces)
+curl -fsSL [https://ollama.com/install.sh](https://ollama.com/install.sh) | sh
+
+# Start Ollama service in background
+ollama serve > /dev/null 2>&1 &
+
+# Pull models
+ollama pull nomic-embed-text
 ollama pull llama3.2
 
 ```
 
-### 3. Setup Project Environment
+### 3. Run the Application
 
-Clone this repository and install dependencies:
-
-```bash
-# Clone repository
-git clone [https://https://github.com/BM757/Local-AI-course-tutor-.git](https://https://github.com/BM757/Local-AI-course-tutor-.git)
-cd course-tutor-app
-
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows use: venv\Scripts\activate
-
-# Install required packages
-pip install -r requirements.txt
-
-```
-
-### 4. Run the Application
-
-Launch the Streamlit app:
+Launch the Streamlit app using `uv`:
 
 ```bash
-streamlit run app.py
+uv run streamlit run app.py
 
 ```
 
@@ -115,7 +113,7 @@ This repository includes a multi-tiered evaluation and monitoring workflow tailo
 Generate synthetic exam questions directly from your vector database to build an automated test suite:
 
 ```bash
-python generate_eval_dataset.py
+uv run generate_eval_dataset.py
 
 ```
 
@@ -124,7 +122,7 @@ python generate_eval_dataset.py
 Evaluate whether `nomic-embed-text` successfully retrieves the target slide chunks in the top 3 results:
 
 ```bash
-python evaluate_retrieval.py
+uv run evaluate_retrieval.py
 
 ```
 
@@ -136,7 +134,7 @@ python evaluate_retrieval.py
 Evaluate candidate LLM responses against reference answers for faithfulness and semantic accuracy:
 
 ```bash
-python evaluate_judge.py
+uv run evaluate_judge.py
 
 ```
 
@@ -156,7 +154,9 @@ All user queries, latency metrics, and feedback are saved locally to `monitoring
 ├── evaluate_retrieval.py   # Script for Hit Rate @ K & MRR evaluation
 ├── evaluate_judge.py      # LLM-as-a-Judge semantic accuracy evaluator
 ├── logger.py               # SQLite telemetry logging helpers
-├── requirements.txt        # Python dependencies
+├── pyproject.toml          # uv project dependencies configuration
+├── uv.lock                 # Lockfile for reproducible installs
+├── requirements.txt        # Exported dependencies for legacy setups
 ├── README.md               # Project documentation
 └── LICENSE                 # Open-source license
 
@@ -168,10 +168,11 @@ All user queries, latency metrics, and feedback are saved locally to `monitoring
 
 | Component | Technology | Rationale |
 | --- | --- | --- |
+| **Package Manager** | `uv` | Ultra-fast environment sync and script execution. |
 | **Frontend UI** | Streamlit | Rapid prototyping in 100% Python with native chat components. |
 | **PDF Extraction** | PyMuPDF (`fitz`) | High-speed text extraction that preserves slide boundaries for exact citations. |
 | **Vector Database** | ChromaDB (`sqlite3`) | Persistent vector storage inside local directory (`./course_tutor_db`) without external server setup. |
-| **Local LLM & Embeddings** | Ollama (`llama3.2` + `nomic-embed-text`) | Zero-cost, privacy-first inference on consumer laptop hardware. |
+| **Local LLM & Embeddings** | Ollama (`llama3.2` + `nomic-embed-text`) | Zero-cost, privacy-first inference on consumer hardware. |
 | **Telemetry & Metrics** | SQLite + Streamlit Dashboard | Zero-dependency tracking of retrieval latencies and user satisfaction scores. |
 
 ---
